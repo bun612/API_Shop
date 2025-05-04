@@ -104,7 +104,6 @@ public class ThongTinActivity extends AppCompatActivity {
         // Tạo đơn hàng
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setCustomer_id(customerId);
-        orderRequest.setTotal(productPrice);
 
         // Tạo danh sách sản phẩm trong đơn hàng
         List<OrderRequest.OrderProduct> products = new ArrayList<>();
@@ -114,8 +113,12 @@ public class ThongTinActivity extends AppCompatActivity {
         orderProduct.setPrice(productPrice);
         products.add(orderProduct);
 
-        // Thêm danh sách sản phẩm vào request
+        // Tính tổng tiền dựa trên giá sản phẩm và số lượng
+        double total = productPrice * 1; // Số lượng * giá
+
+        // Thêm danh sách sản phẩm và tổng tiền vào request
         orderRequest.setProducts(products);
+        orderRequest.setTotal(total);
 
         // Gọi API tạo đơn hàng
         apiService.createOrder(orderRequest).enqueue(new Callback<OrderResponse>() {

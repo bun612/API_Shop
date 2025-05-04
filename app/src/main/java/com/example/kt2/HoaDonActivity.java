@@ -109,7 +109,19 @@ public class HoaDonActivity extends AppCompatActivity {
                 tvTenSP.setText("Sản phẩm: " + detail.getProduct_name());
                 tvGiaSP.setText("Giá: " + decimalFormat.format(detail.getPrice()) + " VND");
                 tvSoLuong.setText("Số lượng: " + detail.getQuantity());
-                tvThanhTien.setText("Thành tiền: " + decimalFormat.format(order.getTotal()) + " VND");
+
+                // Tính lại tổng tiền dựa trên chi tiết đơn hàng
+                double calculatedTotal = 0;
+                for (Order.OrderDetail d : order.getDetails()) {
+                    calculatedTotal += d.getPrice() * d.getQuantity();
+                }
+
+                // Sử dụng tổng tiền đã tính lại nếu order.getTotal() = 0
+                double displayTotal = (order.getTotal() > 0) ? order.getTotal() : calculatedTotal;
+                tvThanhTien.setText("Thành tiền: " + decimalFormat.format(displayTotal) + " VND");
+
+                Log.d(TAG, "Order total from API: " + order.getTotal());
+                Log.d(TAG, "Calculated total: " + calculatedTotal);
             } else {
                 Toast.makeText(this, "Không có chi tiết sản phẩm", Toast.LENGTH_SHORT).show();
             }
@@ -120,7 +132,6 @@ public class HoaDonActivity extends AppCompatActivity {
             displayOrderFromLocalDb(order.getId());
         }
     }
-
     // Hiển thị thông tin đơn hàng từ database local
     private void displayOrderFromLocalDb(long orderId) {
         try {
